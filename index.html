@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Deb Package Repository</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        #header {
+            background-color: #007aff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+        }
+        .button {
+            display: block;
+            width: 80%;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #007aff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #005bb5;
+        }
+        .package-list {
+            margin: 20px auto;
+            max-width: 900px;
+            padding: 0;
+        }
+        .package-item {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .package-item strong {
+            font-size: 18px;
+        }
+        .package-item a {
+            text-decoration: none;
+            color: #007aff;
+            background-color: #e8f0fe;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .package-item a:hover {
+            background-color: #d0e2ff;
+        }
+    </style>
+</head>
+<body>
+    <div id="header">
+        Deb Package Repository
+    </div>
+
+    <a class="button" href="cydia://url/https://cydia.saurik.com/api/share#?source=https://ahmadjerjawi.github.io/repo">
+        Add Ahmad Jerjawi's Repo to Cydia
+    </a>
+
+    <div class="package-list" id="packageList">
+        <!-- Packages will be dynamically loaded here -->
+    </div>
+
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        function fetchDebFiles() {
+            var apiUrl = 'https://api.github.com/repos/ahmadjerjawi/ahmadjerjawi.github.io/contents/debs';
+
+            $.ajax({
+                url: apiUrl,
+                method: 'GET',
+                success: function(response) {
+                    $('#packageList').empty(); // Clear previous results
+
+                    $.each(response, function(index, file) {
+                        if (file.type === 'file' && file.name.endsWith('.deb')) {
+                            var packageName = file.name.replace('.deb', '');
+                            var packageElement = $(
+                                '<div class="package-item">' +
+                                    '<strong>' + packageName + '</strong>' +
+                                    '<a href="' + file.download_url + '">Download</a>' +
+                                '</div>'
+                            );
+                            $('#packageList').append(packageElement);
+                        }
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error loading packages:', textStatus, errorThrown);
+                    $('#packageList').html('<p>Error loading packages. Please try again.</p>');
+                }
+            });
+        }
+
+        // Fetch deb files on page load
+        fetchDebFiles();
+    });
+</script>
+
+</body>
+</html>

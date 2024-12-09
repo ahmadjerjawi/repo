@@ -1,0 +1,8 @@
+Origin: Ahmedjerj's Repo
+Label: Ahmedjerj's Repo
+Suite: stable
+Version: 1.0
+Codename: cydia-ios
+Architectures: iphoneos-arm
+Components: main
+Description: My personal repo for experiments :) i hope it servers you well
